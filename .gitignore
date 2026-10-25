@@ -1,0 +1,9 @@
+**/target/
+**/dist/
+__pycache__/
+*.pyc
+/site/
+/.venv-docs/
+.playwright-cli/
+
+/AGENTS.md

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "http": { "enabled": true, "listen": "127.0.0.1:8098", "access": "loopback" },
+  "lighting": { "backend": "framebuffer" },
+  "clock": { "backend": "sysfs" },
+  "sensors": { "backend": "sysfs" },
+  "volume": { "backend": "alsa" },
+  "input": { "backend": "evdev", "devices": ["vad_keypad", "mute", "awinic_sar"] },
+  "firmware": { "discover": ["aliced"] }
+}

@@ -1,0 +1,36 @@
+@font-face {
+  font-family: Inter;
+  src: url('../assets/fonts/InterVariable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../assets/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+:root > * {
+  --md-text-font: Inter;
+  --md-code-font: 'JetBrains Mono';
+  --md-primary-fg-color: #7954ed;
+  --md-accent-fg-color: #9474f5;
+}
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #100d1d;
+  --md-default-bg-color--light: #191428;
+  --md-default-bg-color--lighter: #251e39;
+  --md-code-bg-color: #191426;
+}
+.md-header { background: #191126; }
+.md-typeset a { text-underline-offset: .18em; }
+.md-typeset a:focus-visible, .md-button:focus-visible {
+  outline: 3px solid var(--md-accent-fg-color);
+  outline-offset: 4px;
+}
+.md-typeset .grid.cards > ul > li { border-radius: .2rem; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+}

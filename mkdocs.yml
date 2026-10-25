@@ -1,0 +1,97 @@
+site_name: yactl
+site_description: Менеджер сервисов и локальный API для Яндекс Станций
+site_url: !ENV [YACTL_SITE_URL, 'http://127.0.0.1:8000/']
+repo_url: !ENV [YACTL_REPO_URL, '']
+repo_name: yactl
+edit_uri: edit/master/docs/
+copyright: yactl · MIT
+strict: true
+validation:
+  links:
+    anchors: warn
+hooks:
+  - docs_hooks.py
+theme:
+  name: material
+  language: ru
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  font: false
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+  palette:
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/weather-night
+        name: Светлая тема
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/weather-sunny
+        name: Тёмная тема
+plugins:
+  - search:
+      lang: [ru, en]
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+      slugify: !!python/name:markdown.extensions.toc.slugify_unicode
+extra_css:
+  - stylesheets/extra.css
+nav:
+  - Главная: index.md
+  - Обзор:
+      - Возможности: overview/features.md
+      - Поддержка и ограничения: overview/support.md
+      - Карта документации: overview/index.md
+      - История изменений: overview/changelog.md
+  - Установка и запуск:
+      - Установка из CI: guide/installation.md
+      - Сборка и первый запуск: guide/quickstart.md
+      - Настройка и доступ: guide/configuration.md
+      - Управление сервисами: guide/services.md
+  - API:
+      - api/index.md
+      - Устройство и состояние: api/device.md
+      - Подсветка: api/lighting.md
+      - Часы: api/clock.md
+      - Датчики: api/sensors.md
+      - Громкость: api/volume.md
+      - События: api/events.md
+      - Кнопки и переключатели: api/input.md
+      - События прошивки: api/firmware.md
+  - Разработка:
+      - Архитектура: development/architecture.md
+      - Сборка и проверки: development/index.md
+      - Работа над документацией: development/documentation.md
+      - Участие в проекте: development/contributing.md
+      - Подготовка релиза: development/releasing.md
+  - Испытания и решения:
+      - Проверки на Миди: development/verification.md
+      - План миграции: development/roadmap.md

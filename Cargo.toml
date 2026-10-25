@@ -1,0 +1,39 @@
+[package]
+name = "yactl"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Service supervision and a local hardware API for Yandex Stations"
+readme = "README.md"
+repository = "https://github.com/D4n13l3k00/yactl"
+documentation = "https://d4n13l3k00.github.io/yactl/"
+include = [
+    "/src/**/*.rs", "/tests/**/*.py", "/docs/**/*.md", "/docs/assets/**",
+    "/docs/stylesheets/*.css", "/deploy/*", "/.cargo/config.toml",
+    "/.github/workflows/*.yml", "/Cargo.toml", "/Cargo.lock", "/LICENSE",
+    "/README.md", "/build.sh", "/rust-toolchain.toml", "/mkdocs.yml",
+    "/docs_hooks.py", "/requirements-docs.txt",
+]
+
+[[bin]]
+name = "yactl"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.6", default-features = false, features = ["derive", "std", "help", "usage", "error-context", "suggestions"] }
+clap_complete = { version = "4.6", default-features = false }
+libc = "0.2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", default-features = false, features = ["rt", "net", "io-util", "time", "sync", "signal", "macros"] }
+axum = { version = "0.8", default-features = false, features = ["http1", "tokio", "json"] }
+hyper = { version = "1", default-features = false, features = ["server", "client", "http1"] }
+hyper-util = { version = "0.1", default-features = false, features = ["tokio", "service"] }
+http-body-util = "0.1"
+
+[profile.release]
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true

@@ -1,0 +1,80 @@
+name: Checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: |
+          python3 - <<'PYTHON'
+          import subprocess, tomllib
+          with open("rust-toolchain.toml", "rb") as source:
+              toolchain = tomllib.load(source)["toolchain"]
+          command = ["rustup", "toolchain", "install", toolchain["channel"], "--profile", toolchain["profile"]]
+          for component in toolchain["components"]:
+              command += ["--component", component]
+          for target in toolchain["targets"]:
+              command += ["--target", target]
+          subprocess.run(command, check=True)
+          PYTHON
+          rustup show active-toolchain
+          rustc --version
+          cargo --version
+      - name: Format, lint and unit tests
+        run: |
+          cargo fmt --check
+          cargo clippy --locked --all-targets -- -D warnings
+          cargo test --locked
+          cargo build --locked
+      - name: CLI, API and process integration
+        run: |
+          python3 tests/migration_cli.py target/debug/yactl
+          python3 tests/api_smoke.py target/debug/yactl
+          python3 tests/async_smoke.py target/debug/yactl
+          python3 tests/api_shutdown.py target/debug/yactl
+          python3 tests/lighting_smoke.py target/debug/yactl
+          python3 tests/clock_smoke.py target/debug/yactl
+          python3 tests/sensors_smoke.py target/debug/yactl
+          python3 tests/volume_smoke.py target/debug/yactl
+          python3 tests/events_smoke.py target/debug/yactl
+          python3 tests/firmware_smoke.py target/debug/yactl
+          python3 tests/input_smoke.py target/debug/yactl
+          python3 tests/smoke.py --binary target/debug/yactl
+      - name: Static AArch64 build
+        run: |
+          cargo build --locked --release --target aarch64-unknown-linux-musl
+      - name: Install UPX
+        run: |
+          curl -fsSL --retry 3 -o "$RUNNER_TEMP/upx.tar.xz" https://github.com/upx/upx/releases/download/v5.2.1/upx-5.2.1-amd64_linux.tar.xz
+          echo "402162aad30af47e60dbd767fb2e64ca394ace9727ba1f40283641f1d1b91657  $RUNNER_TEMP/upx.tar.xz" | sha256sum -c -
+          tar -xJf "$RUNNER_TEMP/upx.tar.xz" -C "$RUNNER_TEMP"
+      - name: Package device build
+        run: |
+          UPX_BIN="$RUNNER_TEMP/upx-5.2.1-amd64_linux/upx" sh build.sh
+          mkdir -p dist/bundle/deploy
+          cp dist/yactl LICENSE dist/bundle/
+          cp deploy/S99yactl deploy/settings-midi.example.json deploy/yactl.fish dist/bundle/deploy/
+          cp docs/guide/installation.md dist/bundle/INSTALL.md
+          tar -czf dist/yactl-aarch64-unknown-linux-musl.tar.gz -C dist/bundle .
+          cd dist
+          sha256sum yactl-aarch64-unknown-linux-musl.tar.gz > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yactl-aarch64-unknown-linux-musl
+          path: |
+            dist/yactl-aarch64-unknown-linux-musl.tar.gz
+            dist/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 14
