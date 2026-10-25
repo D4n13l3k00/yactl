@@ -66,7 +66,9 @@ jobs:
           mkdir -p dist/bundle/deploy
           cp dist/yactl LICENSE dist/bundle/
           cp deploy/S99yactl deploy/settings-midi.example.json deploy/yactl.fish dist/bundle/deploy/
-          cp docs/guide/installation.md dist/bundle/INSTALL.md
+          sed -e 's|](configuration.md)|](https://d4n13l3k00.github.io/yactl/guide/configuration/)|g' \
+              -e 's|](../overview/support.md)|](https://d4n13l3k00.github.io/yactl/overview/support/)|g' \
+              docs/guide/installation.md > dist/bundle/INSTALL.md
           tar -czf dist/yactl-aarch64-unknown-linux-musl.tar.gz -C dist/bundle .
           cd dist
           sha256sum yactl-aarch64-unknown-linux-musl.tar.gz > SHA256SUMS
